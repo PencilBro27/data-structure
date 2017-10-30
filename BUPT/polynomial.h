@@ -25,6 +25,10 @@ struct polynomialNode{
 	{
 		return expn==o.expn;
 	}
+	bool operator===(polynomialNode &o)
+	{
+		return expn==o.expn && coef==o.coef;
+	}
 	polynomialNode operator+(polynomialNode &o)
 	{
 		polynomialNode r;
