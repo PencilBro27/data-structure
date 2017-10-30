@@ -162,7 +162,7 @@ public:
 	}
 
 	//定位，返回序号，时间复杂度是O(n)
-	int locate(T aa)
+	int locate(T &aa)
 	{
 		int r=1;
 		node *index=first->next;
