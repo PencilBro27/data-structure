@@ -80,17 +80,17 @@ public:
 	}
 
 	//在指定的编号插入,时间复杂度是O(n)
-	void insert(int i,T b)
+	bool insert(int i,T b)
 	{
 		if(0==i)
 		{
 			throw "this is head";
-			return ;
+			return false;
 		}
 		if(i<0||i>length)
 		{
 			throw "overflow";
-			return ;
+			return false;
 		}
 		node *index=first;
 		while(i--)
@@ -101,17 +101,21 @@ public:
 		p->front=index->front;
 		p->next->front=p->front->next=p;
 		length++;
+		return true;
 	}
 
 	//在末尾插入,时间复杂度是O(1)
-	void pushBack(T b)
+	bool pushBack(T b)
 	{
 		node *p=new node;
+		if(!p)
+		  return false;
 		p->a=b;
 		p->next=first;
 		p->front=first->front;
 		first->front=first->front->next=p;
 		length++;
+		return true;
 	}
 
 	//根据指针删除,时间复杂度是O(1)
@@ -148,6 +152,21 @@ public:
 
 	//传入序号，查找并返回指针,时间复杂度是O(n)
 	T *get(int aa)
+	{
+		if(aa>length || aa<=0)
+		{
+			throw "overflow";
+			return NULL;
+		}
+		node *index=first;
+		//do not copy
+		while(aa--)
+		  index=index->next;
+		return (T*)index;
+	}
+
+	//与get函数功能相同
+	T *operator[](int aa)
 	{
 		if(aa>length || aa<=0)
 		{
