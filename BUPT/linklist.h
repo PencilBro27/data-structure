@@ -166,18 +166,18 @@ public:
 	}
 
 	//与get函数功能相同
-	T *operator[](int aa)
+	T operator[](int aa)
 	{
 		if(aa>length || aa<=0)
 		{
 			throw "overflow";
-			return NULL;
+			return (T)NULL;
 		}
 		node *index=first;
 		//do not copy
 		while(aa--)
 		  index=index->next;
-		return (T*)index;
+		return index->a;
 	}
 
 	//定位，返回序号，时间复杂度是O(n)
