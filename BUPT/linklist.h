@@ -171,7 +171,7 @@ public:
 		if(aa>length || aa<=0)
 		{
 			throw "overflow";
-			return (T)NULL;
+			return first->a;
 		}
 		node *index=first;
 		//do not copy
