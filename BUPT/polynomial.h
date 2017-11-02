@@ -86,6 +86,13 @@ public:
 		deleteSame();
 	}
 
+	//输入两个数组，一个代表次数，另一个代表系数，时间复杂度是O(n)
+	polynomial(float *c,int *e,int n):LinkList()
+	{
+		while(n--)
+		  insert(c[n],e[n]);
+	}
+
 	//答应在显示屏上的函数,时间复杂度是O(n)
 	void printList()
 	{
@@ -139,7 +146,13 @@ public:
 			throw "e must bigger than 0";
 			return false;
 		}
-		deletePolynomialNode(e);
+		node *index2=first->next;
+		while(index2 != first)
+		{
+			if(index2->a.expn == e)
+			  LinkList::deleteNode(index2);
+			index2=index2->next;
+		}
 		if(0 == c)
 		  return true;
 		polynomialNode n;
