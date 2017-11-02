@@ -165,8 +165,8 @@ public:
 		return (T*)index;
 	}
 
-	//与get函数功能相同
-	T operator[](int aa)
+	//方括号重载，时间复杂度是O(n)
+	T &operator[](int aa)
 	{
 		if(aa>length || aa<=0)
 		{
