@@ -55,15 +55,11 @@ public:
 	//复制构造函数,时间复杂度是O(n)
 	LinkList(LinkList<T> &o)
 	{
-		length=o.length;
+		length=0;
 		first=new node;
 		first->next=first->front=first;
-		for(int i=1;i<=length;i++)
-		{
-			pushBack(((node*)o.get(i))->a);
-			length--;
-			//pushback里面已经将length++
-		}
+		for(int i=1;i<=o.length;i++)
+		  pushBack(((node*)o.get(i))->a);
 	}
 
 	//传入指针，在该指针所指的节点后面插入,时间复杂度是O(1)
