@@ -39,10 +39,11 @@ struct polynomialNode{
 		r.coef=coef-o.coef;
 		return r;
 	}
-	polynomialNode operator=(polynomialNode &o)
+	polynomialNode &operator=(polynomialNode &o)
 	{
 		coef=o.coef;
 		expn=o.expn;
+		return *this;
 	}
 	void operator+=(polynomialNode &o)
 	{
