@@ -215,10 +215,12 @@ public:
 	{
 		length++;
 		node *index=first;
+		node *p=index;
 		while(length--)
 		{
-			delete index->front;
 			index=index->next;
+			delete p;
+			p=index;
 		}
 	}
 
