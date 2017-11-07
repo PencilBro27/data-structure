@@ -2,8 +2,8 @@
  * 该文件是作业2.1对应的头文件，它可以供之后的作业使用
  */
 
-#ifndef __LINKLIST_H__
-#define __LINKLIST_H__
+#ifndef LINKLIST_H
+#define LINKLIST_H
 
 #include <iostream>
 using namespace std;
