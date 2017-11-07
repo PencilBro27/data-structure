@@ -2,8 +2,8 @@
  * 这是作业2.3对应的头文件
  */
 
-#ifndef __POLYNOMIAL_H__
-#define __POLYNOMIAL_H__
+#ifndef POLYNOMIAL_H
+#define POLYNOMIAL_H
 
 #include <iostream>
 #include "linklist.h"
