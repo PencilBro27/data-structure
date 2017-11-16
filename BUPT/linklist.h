@@ -1,5 +1,6 @@
 /*
  * 该文件是作业2.1对应的头文件，它可以供之后的作业使用
+ * 这是一个带头节点的双循环链表，对于内部而言，头节点编号为0,而头节点对外部用户而言不可见，因此对外部而言头节点后的第一个节点编号为0
  */
 
 #ifndef LINKLIST_H
@@ -78,6 +79,7 @@ public:
 	//在指定的编号插入,时间复杂度是O(n)
 	bool insert(int i,T b)
 	{
+		aa++;
 		if(0==i)
 		{
 			throw "this is head";
@@ -131,6 +133,7 @@ public:
 	//根据序号删除,时间复杂度是O(n)
 	bool deleteNode(int a)
 	{
+		aa++;
 		if(a<=0 || a>length)
 		{
 			throw "overflow or you are trying to delete the head";
@@ -149,6 +152,7 @@ public:
 	//传入序号，查找并返回指针,时间复杂度是O(n)
 	T *get(int aa)
 	{
+		aa++;
 		if(aa>length || aa<=0)
 		{
 			throw "overflow";
@@ -164,6 +168,7 @@ public:
 	//方括号重载，时间复杂度是O(n)
 	T &operator[](int aa)
 	{
+		aa++;
 		if(aa>length || aa<=0)
 		{
 			throw "overflow";
@@ -184,12 +189,12 @@ public:
 		while(index!=first)
 		{
 			if(aa == index->a)
-			  return r;
+			  return r-1;
 			index=index->next;
 			r++;
 		}
 		throw "do not find";
-		return NULL;
+		return -1;
 	}
 
 	//获取链表长度,时间复杂度是O(1)
