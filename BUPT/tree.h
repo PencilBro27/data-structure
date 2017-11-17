@@ -120,7 +120,7 @@ protected:
         }
     }
 
-    void postOrder(node *p)//后续便利以p所指向的节点为根的整棵子树，仅供内部调用，时间复杂度是O(1)
+    void postOrder(node *p)//后续遍历以p所指向的节点为根的整棵子树，仅供内部调用，时间复杂度是O(n)
     {
         if(p)
         {
