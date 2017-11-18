@@ -48,7 +48,7 @@ protected:
         }
     }
 
-    bool leftRotate(node *pivot)//以pivot所指向的节点为中心左旋，仅供内部调用，时间复杂度为O(1)
+    inline bool leftRotate(node *pivot)//以pivot所指向的节点为中心左旋，仅供内部调用，时间复杂度为O(1)
     {
         if(NULL==pivot->rc)
           return false;
@@ -74,7 +74,7 @@ protected:
         return true;
     }
 
-    bool rightRotate(node *pivot)//以pivot所指向的节点为中心右旋，仅供内部调用，时间复杂度为O(1)
+    inline bool rightRotate(node *pivot)//以pivot所指向的节点为中心右旋，仅供内部调用，时间复杂度为O(1)
     {
         if(NULL==pivot->lc)
           return false;
@@ -141,7 +141,7 @@ protected:
         }
     }
 
-    void Delete(node *p)//供public中的pop函数调用，删除p所指向的节点，然后调用repair函数，修复被破坏的红黑树性质，仅供内部调用，时间复杂度是O(log n)
+    inline void Delete(node *p)//供public中的pop函数调用，删除p所指向的节点，然后调用repair函数，修复被破坏的红黑树性质，仅供内部调用，时间复杂度是O(log n)
     {
         node *temp;
         bool d;
@@ -173,41 +173,38 @@ protected:
               temp->parent->lc=NULL;
             else
               temp->parent->rc=NULL;
-            Delete(temp);
+            p=temp;
         }
-        else
+        temp=p->lc?p->lc:p->rc;
+        if(temp)
+          temp->parent=p->parent;
+        if(p->parent)
         {
-            temp=p->lc?p->lc:p->rc;
-            if(temp)
-              temp->parent=p->parent;
-            if(p->parent)
+            if(p==p->parent->lc)
             {
-                if(p==p->parent->lc)
-                {
-                    p->parent->lc=temp;
-                    d=false;
-                }
-                else
-                {
-                    p->parent->rc=temp;
-                    d=true;
-                }
+                p->parent->lc=temp;
+                d=false;
             }
             else
             {
-                root=temp;
-                if(temp)
-                  temp->black=true;
-                delete p;
-                return ;
+                p->parent->rc=temp;
+                d=true;
             }
-            bool flag=p->black;
-            temp=p->parent;
-            delete p;
-            p=NULL;
-            if(flag)
-              repair(temp,d);
         }
+        else
+        {
+            root=temp;
+            if(temp)
+              temp->black=true;
+            delete p;
+            return ;
+        }
+        bool flag=p->black;
+        temp=p->parent;
+        delete p;
+        p=NULL;
+        if(flag)
+          repair(temp,d);
     }
 
     void repair(node *p,bool d)//供Delete函数调用，修复被破坏的红黑树性质，p指向被删除节点的父节点（如果有的话），d表明被删除的节点是父节点的左孩子还是右孩子（false为左，true为右），仅供内部调用，时间复杂度是O(log n)
