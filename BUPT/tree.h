@@ -658,15 +658,25 @@ public:
         else
           p2->rc=temp;
         temp->parent=p2;
-        p1=p2;
-        p2=p2->parent;
         Size++;
         while(true)
         {
+            if(temp==root)
+              return temp->black=true;
+            p1=temp->parent;
             if(p1->black)
               return true;
-            else if(NULL==p2->lc)
+            p2=p1->parent;
+            if(NULL==p2->lc)
             {
+                if(k<p1->key)
+                {
+                    rightRotate(p1);
+                    leftRotate(p2);
+                    p2->black=false;
+                    temp->black=true;
+                    return true;
+                }
                 leftRotate(p2);
                 p2->black=false;
                 p1->black=true;
@@ -674,6 +684,14 @@ public:
             }
             else if(NULL==p2->rc)
             {
+                if(k>p1->key)
+                {
+                    leftRotate(p1);
+                    rightRotate(p2);
+                    p2->black=false;
+                    temp->black=true;
+                    return true;
+                }
                 rightRotate(p2);
                 p2->black=false;
                 p1->black=true;
@@ -684,16 +702,6 @@ public:
                 p2->lc->black=p2->rc->black=true;
                 p2->black=false;
                 temp=p2;
-                p1=temp->parent;
-                if(p1)
-                  p2=p1->parent;
-                else
-                {
-                    temp->black=true;
-                    return true;
-                }
-                if(NULL==p2)
-                  return true;
             }
             else if(temp==p1->lc&&p1==p2->lc)
             {
@@ -710,15 +718,9 @@ public:
                 return true;
             }
             else if(temp==p1->lc&&p1==p2->rc)
-            {
-                rightRotate(p1);
-                swap(p1,temp);
-            }
+              rightRotate(temp=p1);
             else if(temp==p1->rc&&p1==p2->lc)
-            {
-                leftRotate(p1);
-                swap(p1,temp);
-            }
+              leftRotate(temp=p1);
         }
         return false;
     }
