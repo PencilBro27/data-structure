@@ -24,7 +24,7 @@ using namespace std;
 
 template<class Key,class Value>
 class tree{
-public:
+protected:
     struct node{
         Key key;
         Value value;
