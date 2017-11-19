@@ -14,28 +14,28 @@ class LinkList
 protected:
     struct node{
         T a;
-        node *next,*front;
+        node *next,*prior;
     };
     int length;
-    node *first;
+    node *front;
 public:
     //构造空链表,时间复杂度是O(1)
     LinkList()
     {
         length=0;
-        first=new node;
-        first->next=first->front=first;
+        front=new node;
+        front->next=front->prior=front;
     }
 
     //头插法构造链表插入之后顺序颠倒,时间复杂度是O(n)
     LinkList(T *arr,int n)
     {
-        first=new node;
+        front=new node;
         length=0;
-        first->next=first->front=first;
+        front->next=front->prior=front;
         for(int i=0;i<n;i++)
         {
-            insert(first,arr[i]);
+            insert(front,arr[i]);
         }
         length=n;
     }
@@ -43,9 +43,9 @@ public:
     //尾插法构造链表插入之后顺序不变,时间复杂度是O(n)
     LinkList(T *arr,int n,int flag)
     {
-        first=new node;
+        front=new node;
         length=0;
-        first->next=first->front=first;
+        front->next=front->prior=front;
         for(int i=0;i<n;i++)
         {
             pushBack(arr[i]);
@@ -56,10 +56,11 @@ public:
     LinkList(LinkList<T> &o)
     {
         length=0;
-        first=new node;
-        first->next=first->front=first;
-        for(int i=1;i<=o.length;i++)
-          pushBack(((node*)o.get(i))->a);
+        front=new node;
+        front->next=front->prior=front;
+        typename LinkList<int>::iterator iter(o);
+        for(;!iter.end();iter.next())
+          pushBack(*iter);
     }
 
     //传入指针，在该指针所指的节点后面插入,时间复杂度是O(1)
@@ -67,11 +68,11 @@ public:
     {
         node *p=new node;
         p->a=b;
-        p->front=(node*)i;
+        p->prior=(node*)i;
         //by donghao
         p->next=((node*)i)->next;
         ((node*)i)->next=p;
-        p->next->front=p;
+        p->next->prior=p;
         length++;
     }
 
@@ -84,14 +85,14 @@ public:
             throw "overflow";
             return false;
         }
-        node *index=first;
+        node *index=front;
         while(i--)
           index=index->next;
         node *p=new node;
         p->a=b;
         p->next=index;
-        p->front=index->front;
-        p->next->front=p->front->next=p;
+        p->prior=index->prior;
+        p->next->prior=p->prior->next=p;
         length++;
         return true;
     }
@@ -103,9 +104,9 @@ public:
         if(!p)
           return false;
         p->a=b;
-        p->next=first;
-        p->front=first->front;
-        first->front=first->front->next=p;
+        p->next=front;
+        p->prior=front->prior;
+        front->prior=front->prior->next=p;
         length++;
         return true;
     }
@@ -118,8 +119,8 @@ public:
             throw "the linklist is empty";
             return false;
         }
-        ((node*)i)->next->front=((node*)i)->front;
-        ((node*)i)->front->next=((node*)i)->next;
+        ((node*)i)->next->prior=((node*)i)->prior;
+        ((node*)i)->prior->next=((node*)i)->next;
         length--;
         return true;
     }
@@ -133,11 +134,11 @@ public:
             throw "overflow";
             return false;
         }
-        node *index=first;
+        node *index=front;
         while(a--)
           index=index->next;
-        index->next->front=index->front;
-        index->front->next=index->next;
+        index->next->prior=index->prior;
+        index->prior->next=index->next;
         delete index;
         length--;
         return true;
@@ -152,7 +153,7 @@ public:
             throw "overflow";
             return NULL;
         }
-        node *index=first;
+        node *index=front;
         //do not copy
         while(aa--)
           index=index->next;
@@ -166,9 +167,9 @@ public:
         if(aa>length || aa<=0)
         {
             throw "overflow";
-            return first->a;
+            return front->a;
         }
-        node *index=first;
+        node *index=front;
         //do not copy
         while(aa--)
           index=index->next;
@@ -179,8 +180,8 @@ public:
     int locate(T &aa)
     {
         int r=0;
-        node *index=first->next;
-        while(index!=first)
+        node *index=front->next;
+        while(index!=front)
         {
             if(aa == index->a)
               return r;
@@ -200,7 +201,7 @@ public:
     //打印链表数据,时间复杂度是O(n)
     void printList()
     {
-        node *index=first;
+        node *index=front;
         for(int i=0;i<length;i++)
         {
             index=index->next;
@@ -213,7 +214,7 @@ public:
     ~LinkList()
     {
         length++;
-        node *index=first;
+        node *index=front;
         node *p=index;
         while(length--)
         {
@@ -226,20 +227,20 @@ public:
     //链表倒置函数,时间复杂度是O(n)
     void invert()
     {
-        node *index=first;
+        node *index=front;
         for(int i=0;i<=length;i++)
         {
             node *temp=index->next;
-            index->next=index->front;
-            index->front=temp;
-            index=index->front;
+            index->next=index->prior;
+            index->prior=temp;
+            index=index->prior;
         }
     }
 
     //排序函数，排序之后为升序,方法为选择排序,时间复杂度是O(n^2)
     void listSort()
     {
-        node *index=first;
+        node *index=front;
         node *index2;
         T *it;
         for(int i=1;i<length;i++)
@@ -262,9 +263,9 @@ public:
     //一个新的构造函数，传入一个数组，自动调用排序函数排序,时间复杂度是O(n^2)
     LinkList(T *arr,int n,double sort)
     {
-        first=new node;
+        front=new node;
         length=0;
-        first->next=first->front=first;
+        front->next=front->prior=front;
         for(int i=0;i<n;i++)
         {
             pushBack(arr[i]);
@@ -275,31 +276,31 @@ public:
     //合并两个顺序链表，合并之后仍为顺序链表且无重复节点,时间复杂度是O(n)
     void merge(LinkList<T> &o)
     {
-        node *index1=first->next,*index2=o.first->next;
-        while(index1!=first && index2!=o.first)
+        node *index1=front->next,*index2=o.front->next;
+        while(index1!=front && index2!=o.front)
         {
             if(index2->a < index1->a)
             {
-                insert(index1->front,index2->a);
-                index1=index1->front;
+                insert(index1->prior,index2->a);
+                index1=index1->prior;
             }
             if(index2->a == index1->a)
               index2=index2->next;
-            if(index1->next == first)
+            if(index1->next == front)
               break;
             if(index1->a == index1->next->a)
               deleteNode(index1->next);
             else
               index1=index1->next;
         }
-        if(index1->next == first)
+        if(index1->next == front)
         {
-            while(index2 != o.first)
+            while(index2 != o.front)
             {
                 if(index2->a < index1->a)
                 {
-                    insert(index1->front,index2->a);
-                    index1=index1->front;
+                    insert(index1->prior,index2->a);
+                    index1=index1->prior;
                 }
                 if(index2->a == index1->a)
                   index2=index2->next;
@@ -312,6 +313,50 @@ public:
             }
         }
     }
+
+    //迭代器
+    class iterator{
+    protected:
+        LinkList &L;
+        union{
+            node *n;
+            T *p;
+        };
+        int index;
+    public:
+        iterator(LinkList &ll,int index=0):L(ll)
+        {
+            this->index=index;
+            p=L.get(index);
+        }
+
+        bool begin()
+        {
+            if(L.length)
+              return bool(n=L.front);
+            return false;
+        }
+
+        void prior()
+        {
+            n=n->prior;
+        }
+
+        void next()
+        {
+            n=n->next;
+        }
+
+        bool end()
+        {
+            return L.front==n;
+        }
+
+        T &operator*()
+        {
+            return *p;
+        }
+    };
 };
 
 #endif
