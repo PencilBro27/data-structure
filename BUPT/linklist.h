@@ -78,12 +78,8 @@ public:
     //在指定的编号插入,时间复杂度是O(n)
     bool insert(int i,T b)
     {
-        if(0==i)
-        {
-            throw "this is head";
-            return false;
-        }
-        if(i<0||i>length)
+        i++;
+        if(i<=0||i>length)
         {
             throw "overflow";
             return false;
@@ -134,7 +130,7 @@ public:
         a++;
         if(a<=0 || a>length)
         {
-            throw "overflow or you are trying to delete the head";
+            throw "overflow";
             return false;
         }
         node *index=first;
@@ -150,6 +146,7 @@ public:
     //传入序号，查找并返回指针,时间复杂度是O(n)
     T *get(int aa)
     {
+        aa++;
         if(aa>length || aa<=0)
         {
             throw "overflow";
