@@ -19,7 +19,7 @@
 
 #include <iostream>
 #include <algorithm>
-#include <queue>
+#include "linklist.h"
 using namespace std;
 
 template<class Key,class Value>
@@ -141,7 +141,27 @@ protected:
         }
     }
 
-    inline void Delete(node *p)//供public中的pop函数调用，删除p所指向的节点，然后调用repair函数，修复被破坏的红黑树性质，仅供内部调用，时间复杂度是O(log n)
+    int getMaxPath(node *p)
+    {
+        int l,r;
+        if(NULL==p)
+          return 0;
+        l=getMaxPath(p->lc);
+        r=getMaxPath(p->rc);
+        return 1+(l>r?l:r);
+    }
+
+    int getMinPath(node *p)
+    {
+        int l,r;
+        if(NULL==p)
+          return 0;
+        l=getMinPath(p->lc);
+        r=getMinPath(p->rc);
+        return 1+(l<r?l:r);
+    }
+
+    inline void Delete(node *p)//供public中的pop函数调用，删除p所指向的节点，修复被破坏的红黑树性质，仅供内部调用，时间复杂度是O(log n)
     {
         node *temp;
         bool d;
@@ -203,12 +223,9 @@ protected:
         temp=p->parent;
         delete p;
         p=NULL;
-        if(flag)
-          repair(temp,d);
-    }
-
-    void repair(node *p,bool d)//供Delete函数调用，修复被破坏的红黑树性质，p指向被删除节点的父节点（如果有的话），d表明被删除的节点是父节点的左孩子还是右孩子（false为左，true为右），仅供内部调用，时间复杂度是O(log n)
-    {
+        if(false==flag)
+          return ;
+        p=temp;
         if(NULL==p)
           return ;
         node *n,*s,*sl,*sr;
@@ -240,13 +257,40 @@ protected:
           br=sr->black;
         if(n)
           bn=n->black;
-        if(!bn)
+        while(true)
         {
-            n->black=true;
-            return ;
-        }
-        if(bs&&bp&&bl&&br)
-        {
+            if(!bn)
+            {
+                n->black=true;
+                return ;
+            }
+            if((!bp)&&bs&&bl&&br)
+            {
+                p->black=true;
+                s->black=false;
+                return ;
+            }
+            else if(bs&&(!br))
+            {
+                sr->black=true;
+                swap(p->black,s->black);
+                leftRotate(p);
+                return ;
+            }
+            else if(bs&&(!bl))
+            {
+                s->black=false;
+                sl->black=true;
+                rightRotate(s);
+                return ;
+            }
+            else if(!bs)
+            {
+                s->black=true;
+                p->black=false;
+                leftRotate(p);
+                return ;
+            }
             s->black=false;
             if(!p->parent)
               return ;
@@ -254,35 +298,7 @@ protected:
               d=true;
             else
               d=false;
-            repair(p->parent,d);
-            return ;
-        }
-        if((!bp)&&bs&&bl&&br)
-        {
-            p->black=true;
-            s->black=false;
-            return ;
-        }
-        if(bs&&(!br))
-        {
-            sr->black=true;
-            swap(p->black,s->black);
-            leftRotate(p);
-            return ;
-        }
-        if(bs&&(!bl))
-        {
-            s->black=false;
-            sl->black=true;
-            rightRotate(s);
-            return ;
-        }
-        if(!bs)
-        {
-            s->black=true;
-            p->black=false;
-            leftRotate(p);
-            return ;
+            p=p->parent;
         }
     }
 public:
@@ -504,17 +520,17 @@ public:
         if(NULL==root)
           return ;
         node *p;
-        queue<node*> q;//使用队列遍历
-        q.push(root);
-        while(!q.empty())
+        LinkList<node*> l;
+        l.pushBack(root);
+        while(l.getLength())
         {
-            p=q.front();
-            q.pop();
+            p=l[0];
+            l.deleteNode(0);
             cout << "Key:" << p->key << "   Value:" << p->value <<endl;
             if(p->lc)
-              q.push(p->lc);
+              l.pushBack(p->lc);
             if(p->rc)
-              q.push(p->rc);
+              l.pushBack(p->rc);
         }
     }
 
@@ -592,6 +608,21 @@ public:
             }
         }
         return r;
+    }
+
+    int maxPath()
+    {
+        return getMaxPath(root);
+    }
+
+    int minPath()
+    {
+        return getMinPath(root);
+    }
+
+    bool balance()
+    {
+        return maxPath()-minPath()<2?true:false;
     }
 };
 
