@@ -62,11 +62,11 @@ protected:
     void deleteSame()
     {
         listSort();
-        node *index=first;
-        while(index->next != first)
+        node *index=front;
+        while(index->next != front)
         {
             index=index->next;
-            if(index->a == index->next->a && index->next != first)
+            if(index->a == index->next->a && index->next != front)
             {
                 index->a += index->next->a;
                 deleteNode(index->next);
@@ -97,7 +97,7 @@ public:
     //答应在显示屏上的函数,时间复杂度是O(n)
     void printList()
     {
-        node *index=first;
+        node *index=front;
         for(int i=0;i<length;i++)
         {
             if(i)
@@ -111,7 +111,7 @@ public:
     //合并函数，自动调用删除重复的节点的函数,时间复杂度是O(n^2)
     void merge(polynomial &o)
     {
-        node *index=o.first;
+        node *index=o.front;
         for(int i=0;i<o.length;i++)
         {
             index=index->next;
@@ -128,8 +128,8 @@ public:
             throw "n must bigger than 0";
             return false;
         }
-        node *index=first->next;
-        while(index!=first)
+        node *index=front->next;
+        while(index!=front)
           if(index->a.expn==n)
           {
               deleteNode(index);
@@ -147,8 +147,8 @@ public:
             throw "e must bigger than 0";
             return false;
         }
-        node *index2=first->next;
-        while(index2 != first)
+        node *index2=front->next;
+        while(index2 != front)
         {
             if(index2->a.expn == e)
               LinkList::deleteNode(index2);
@@ -159,23 +159,23 @@ public:
         polynomialNode n;
         n.coef=c;
         n.expn=e;
-        if(e>first->next->a.expn)
+        if(e>front->next->a.expn)
         {
-            LinkList::insert(first,n);
+            LinkList::insert(front,n);
             return true;
         }
-        if(e<first->front->a.expn)
+        if(e<front->prior->a.expn)
         {
-            LinkList::insert(first->front,n);
+            LinkList::insert(front->prior,n);
             return true;
         }
-        if(e<first->front->front->a.expn)
+        if(e<front->prior->prior->a.expn)
         {
-            LinkList::insert(first->front->front,n);
+            LinkList::insert(front->prior->prior,n);
             return true;
         }
-        node *index=first->next;
-        while(index->next != first)
+        node *index=front->next;
+        while(index->next != front)
         {
             if(e<index->a.expn && e>index->next->a.expn)
             {
@@ -190,11 +190,11 @@ public:
     double calculate(double x)
     {
         double r=0.0;
-        double *arr=new double[first->next->a.expn + 1];
+        double *arr=new double[front->next->a.expn + 1];
         arr[0]=1.0;
-        for(int i=0;i<first->next->a.expn;i++)
+        for(int i=0;i<front->next->a.expn;i++)
           arr[i+1]=arr[i]*x;
-        node *index=first;
+        node *index=front;
         for(int i=0;i<length;i++)
         {
             index=index->next;
@@ -206,14 +206,14 @@ public:
     //求导，覆盖原有的多项式，时间复杂度是O(n)
     void differential()
     {
-        node *index=first->next;
-        while(index != first)
+        node *index=front->next;
+        while(index != front)
         {
             index->a.coef*=index->a.expn--;
             index=index->next;
         }
-        if(-1 == index->front->a.expn)
-          deleteNode(index->front);
+        if(-1 == index->prior->a.expn)
+          deleteNode(index->prior);
     }
 };
 
