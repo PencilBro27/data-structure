@@ -317,14 +317,14 @@ public:
     //迭代器
     class iterator{
     protected:
-        LinkList &L;
+        LinkList<T> &L;
         union{
             node *n;
             T *p;
         };
         int index;
     public:
-        iterator(LinkList &ll,int index=0):L(ll)
+        iterator(LinkList<T> &ll,int index=0):L(ll)
         {
             this->index=index;
             p=L.get(index);
