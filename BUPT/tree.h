@@ -24,7 +24,7 @@ using namespace std;
 
 template<class Key,class Value>
 class tree{
-protected:
+public:
     struct node{
         Key key;
         Value value;
@@ -38,13 +38,48 @@ protected:
     int Size;//这棵树中有多少个非叶子结点
     node *root;
 
-    void destroy(node *n)//销毁以n所指向的节点为根的整棵树，仅供内部调用，时间复杂度为O(n)
+    void destroy(node *p)//销毁以p所指向的节点为根的整棵树，仅供内部调用，时间复杂度为O(n)
     {
-        if(n)
+        if(NULL==p)
+          return ;
+        int c=1;
+        LinkList<node*> l;
+        LinkList<int> i;
+        l.pushBack(root);
+        i.pushBack(0);
+        while(c)
         {
-            destroy(n->lc);
-            destroy(n->rc);
-            delete n;
+            if(0==i[0])
+            {
+                i[0]+=1;
+                if(l[0]->lc)
+                {
+                    l.insert(0,l[0]->lc);
+                    i.insert(0,0);
+                    c++;
+                }
+            }
+            else if(1==i[0])
+            {
+                i[0]+=1;
+                if(l[0]->rc)
+                {
+                    l.insert(0,l[0]->rc);
+                    i.insert(0,0);
+                    c++;
+                }
+            }
+            else if(2==i[0])
+            {
+                i[0]+=1;
+                delete l[0];
+            }
+            else
+            {
+                l.deleteNode(0);
+                i.deleteNode(0);
+                c--;
+            }
         }
     }
 
@@ -102,63 +137,235 @@ protected:
 
     void preOrder(node *p)//前序遍历以p所指向的节点为根的整棵子树，仅供内部调用，时间复杂度为O(n)
     {
-        if(p)
+        if(NULL==p)
+          return ;
+        int c=1;
+        LinkList<node*> l;
+        LinkList<int> i;
+        l.pushBack(root);
+        i.pushBack(0);
+        while(c)
         {
-            cout << "Key:" << p->key << "   Value:" << p->value <<endl;
-            preOrder(p->lc);
-            preOrder(p->rc);
+            if(0==i[0])
+            {
+                i[0]+=1;
+                cout << "Key:" << l[0]->key << "   Value:" << l[0]->value << endl;
+            }
+            else if(1==i[0])
+            {
+                i[0]+=1;
+                if(l[0]->lc)
+                {
+                    l.insert(0,l[0]->lc);
+                    i.insert(0,0);
+                    c++;
+                }
+            }
+            else if(2==i[0])
+            {
+                i[0]+=1;
+                if(l[0]->rc)
+                {
+                    l.insert(0,l[0]->rc);
+                    i.insert(0,0);
+                    c++;
+                }
+            }
+            else
+            {
+                l.deleteNode(0);
+                i.deleteNode(0);
+                c--;
+            }
         }
     }
 
     void inOrder(node *p)//中序遍历以p所指向的节点为根的整棵子树，仅供内部调用，时间复杂度是O(n)
     {
-        if(p)
+        if(NULL==p)
+          return ;
+        int c=1;
+        LinkList<node*> l;
+        LinkList<int> i;
+        l.pushBack(root);
+        i.pushBack(0);
+        while(c)
         {
-            inOrder(p->lc);
-            cout << "Key:" << p->key << "   Value:" << p->value <<endl;
-            inOrder(p->rc);
+            if(0==i[0])
+            {
+                i[0]+=1;
+                if(l[0]->lc)
+                {
+                    l.insert(0,l[0]->lc);
+                    i.insert(0,0);
+                    c++;
+                }
+            }
+            else if(1==i[0])
+            {
+                cout << "Key:" << l[0]->key << "   Value:" << l[0]->value << endl;
+                i[0]+=1;
+            }
+            else if(2==i[0])
+            {
+                i[0]+=1;
+                if(l[0]->rc)
+                {
+                    l.insert(0,l[0]->rc);
+                    i.insert(0,0);
+                    c++;
+                }
+            }
+            else
+            {
+                l.deleteNode(0);
+                i.deleteNode(0);
+                c--;
+            }
         }
     }
 
     void postOrder(node *p)//后续遍历以p所指向的节点为根的整棵子树，仅供内部调用，时间复杂度是O(n)
     {
-        if(p)
+        if(NULL==p)
+          return ;
+        int c=1;
+        LinkList<node*> l;
+        LinkList<int> i;
+        l.pushBack(root);
+        i.pushBack(0);
+        while(c)
         {
-            postOrder(p->lc);
-            postOrder(p->rc);
-            cout << "Key:" << p->key << "   Value:" << p->value <<endl;
-        }
-    }
-
-    void copy(node* &i,node *o)//被拷贝构造函数调用，拷贝以o所指向的节点为根的整棵子树，仅供内部调用，时间复杂度是O(n)
-    {
-        if(o)
-        {
-            i=new node;
-            *i=*o;
-            copy(i->rc,o->rc);
-            copy(i->lc,o->lc);
+            if(0==i[0])
+            {
+                i[0]+=1;
+                if(l[0]->lc)
+                {
+                    l.insert(0,l[0]->lc);
+                    i.insert(0,0);
+                    c++;
+                }
+            }
+            else if(1==i[0])
+            {
+                i[0]+=1;
+                if(l[0]->rc)
+                {
+                    l.insert(0,l[0]->rc);
+                    i.insert(0,0);
+                    c++;
+                }
+            }
+            else if(2==i[0])
+            {
+                i[0]+=1;
+                cout << "Key:" << l[0]->key << "   Value:" << l[0]->value << endl;
+            }
+            else
+            {
+                l.deleteNode(0);
+                i.deleteNode(0);
+                c--;
+            }
         }
     }
 
     int getMaxPath(node *p)
     {
-        int l,r;
         if(NULL==p)
           return 0;
-        l=getMaxPath(p->lc);
-        r=getMaxPath(p->rc);
-        return 1+(l>r?l:r);
+        int c=1,r=0;
+        LinkList<node*> l;
+        LinkList<int> i;
+        l.pushBack(root);
+        i.pushBack(0);
+        while(c)
+        {
+            if(0==i[0])
+            {
+                i[0]+=1;
+                if(l[0]->lc)
+                {
+                    l.insert(0,l[0]->lc);
+                    i.insert(0,0);
+                    c++;
+                }
+                else
+                {
+                  r=r<c?c:r;
+                }
+            }
+            else if(1==i[0])
+            {
+                i[0]+=1;
+                if(l[0]->rc)
+                {
+                    l.insert(0,l[0]->rc);
+                    i.insert(0,0);
+                    c++;
+                }
+                else
+                {
+                  r=r<c?c:r;
+                }
+            }
+            else
+            {
+                l.deleteNode(0);
+                i.deleteNode(0);
+                c--;
+            }
+        }
+        return r;
     }
 
     int getMinPath(node *p)
     {
-        int l,r;
         if(NULL==p)
           return 0;
-        l=getMinPath(p->lc);
-        r=getMinPath(p->rc);
-        return 1+(l<r?l:r);
+        int c=1,r=Size;
+        LinkList<node*> l;
+        LinkList<int> i;
+        l.pushBack(root);
+        i.pushBack(0);
+        while(c)
+        {
+            if(0==i[0])
+            {
+                i[0]+=1;
+                if(l[0]->lc)
+                {
+                    l.insert(0,l[0]->lc);
+                    i.insert(0,0);
+                    c++;
+                }
+                else
+                {
+                    r=r>c?c:r;
+                }
+            }
+            else if(1==i[0])
+            {
+                i[0]+=1;
+                if(l[0]->rc)
+                {
+                    l.insert(0,l[0]->rc);
+                    i.insert(0,0);
+                    c++;
+                }
+                else
+                {
+                    r=r>c?c:r;
+                }
+            }
+            else
+            {
+                l.deleteNode(0);
+                i.deleteNode(0);
+                c--;
+            }
+        }
+        return r;
     }
 
     inline void Delete(node *p)//供public中的pop函数调用，删除p所指向的节点，修复被破坏的红黑树性质，仅供内部调用，时间复杂度是O(log n)
@@ -310,7 +517,55 @@ public:
 
     tree(tree<Key,Value> &o)//拷贝构造函数，时间复杂度是O(n)
     {
-        copy(root,o.root);//通过递归的方法创建
+        if(0==(Size=o.Size))
+          return ;
+        int c=1;
+        LinkList<node**> l;
+        LinkList<node*> ot;
+        LinkList<int> i;
+        root=new node;
+        *root=*o.root;
+        l.pushBack(&root);
+        ot.pushBack(o.root);
+        i.pushBack(0);
+        while(c)
+        {
+            if(0==i[0])
+            {
+                i[0]+=1;
+                *l[0]=new node;
+                **l[0]=*ot[0];
+            }
+            else if(1==i[0])
+            {
+                i[0]+=1;
+                if(ot[0]->lc)
+                {
+                    ot.insert(0,ot[0]->lc);
+                    l.insert(0,&((*l[0])->lc));
+                    i.insert(0,0);
+                    c++;
+                }
+            }
+            else if(2==i[0])
+            {
+                i[0]+=1;
+                if(ot[0]->rc)
+                {
+                    ot.insert(0,ot[0]->rc);
+                    l.insert(0,&((*l[0])->rc));
+                    i.insert(0,0);
+                    c++;
+                }
+            }
+            else
+            {
+                ot.deleteNode(0);
+                l.deleteNode(0);
+                i.deleteNode(0);
+                c--;
+            }
+        }
     }
 
     Value* search(Key k)//既是查找函数，也是修改函数，时间复杂度是O(log n)
@@ -497,22 +752,22 @@ public:
 
     ~tree()//析构函数，时间复杂度是O(n)
     {
-        destroy(root);//递归删掉所有节点
+        destroy(root);
     }
 
     void preOrder()//前序遍历，时间复杂度是O(n)
     {
-        preOrder(root);//递归遍历
+        preOrder(root);
     }
 
     void inOrder()//中序遍历，时间复杂度是O(n)
     {
-        inOrder(root);//递归遍历
+        inOrder(root);
     }
 
     void postOrder()//后续遍历，时间复杂度是O(n)
     {
-        postOrder(root);//递归遍历
+        postOrder(root);
     }
 
     void levelOrder()//层序遍历，时间复杂度是O(n)
