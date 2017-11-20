@@ -38,51 +38,6 @@ protected:
     int Size;//这棵树中有多少个非叶子结点
     node *root;
 
-    void destroy(node *p)//销毁以p所指向的节点为根的整棵树，仅供内部调用，时间复杂度为O(n)
-    {
-        if(NULL==p)
-          return ;
-        int c=1;
-        LinkList<node*> l;
-        LinkList<int> i;
-        l.pushBack(root);
-        i.pushBack(0);
-        while(c)
-        {
-            if(0==i[0])
-            {
-                i[0]+=1;
-                if(l[0]->lc)
-                {
-                    l.insert(0,l[0]->lc);
-                    i.insert(0,0);
-                    c++;
-                }
-            }
-            else if(1==i[0])
-            {
-                i[0]+=1;
-                if(l[0]->rc)
-                {
-                    l.insert(0,l[0]->rc);
-                    i.insert(0,0);
-                    c++;
-                }
-            }
-            else if(2==i[0])
-            {
-                i[0]+=1;
-                delete l[0];
-            }
-            else
-            {
-                l.deleteNode(0);
-                i.deleteNode(0);
-                c--;
-            }
-        }
-    }
-
     inline bool leftRotate(node *pivot)//以pivot所指向的节点为中心左旋，仅供内部调用，时间复杂度为O(1)
     {
         if(NULL==pivot->rc)
@@ -270,7 +225,7 @@ protected:
         }
     }
 
-    int getMaxPath(node *p)
+    int getMaxPath(node *p)//返回p所指向的节点的最大路径，时间复杂度是O(n)
     {
         if(NULL==p)
           return 0;
@@ -319,7 +274,7 @@ protected:
         return r;
     }
 
-    int getMinPath(node *p)
+    int getMinPath(node *p)//返回p所指向的节点的子树的最短路径，时间复杂度是O(n)
     {
         if(NULL==p)
           return 0;
@@ -372,6 +327,7 @@ protected:
     {
         node *temp;
         bool d;
+        Size--;
         if(p->rc&&p->lc)
         {
             if(p->leftcount>p->rightcount)
@@ -610,10 +566,49 @@ public:
 
     void clear()//清空整棵数，时间复杂度是O(n)
     {
-        if(root)
-          destroy(root);//通过递归的方法删掉所有节点
-        root=NULL;
+        if(NULL==root)
+          return ;
+        int c=1;
+        LinkList<node*> l;
+        LinkList<int> i;
+        l.pushBack(root);
+        i.pushBack(0);
+        while(c)
+        {
+            if(0==i[0])
+            {
+                i[0]+=1;
+                if(l[0]->lc)
+                {
+                    l.insert(0,l[0]->lc);
+                    i.insert(0,0);
+                    c++;
+                }
+            }
+            else if(1==i[0])
+            {
+                i[0]+=1;
+                if(l[0]->rc)
+                {
+                    l.insert(0,l[0]->rc);
+                    i.insert(0,0);
+                    c++;
+                }
+            }
+            else if(2==i[0])
+            {
+                i[0]+=1;
+                delete l[0];
+            }
+            else
+            {
+                l.deleteNode(0);
+                i.deleteNode(0);
+                c--;
+            }
+        }
         Size=0;
+        root=NULL;
     }
 
     bool insert(Key k,Value v)//插入一个结点，并保持红黑树性质不变，时间复杂度是O(log n)
@@ -754,7 +749,7 @@ public:
 
     ~tree()//析构函数，时间复杂度是O(n)
     {
-        destroy(root);
+        clear();
     }
 
     void preOrder()//前序遍历，时间复杂度是O(n)
@@ -867,17 +862,17 @@ public:
         return r;
     }
 
-    int maxPath()
+    int maxPath()//获得该树的最大深度,时间复杂度是O(n)
     {
         return getMaxPath(root);
     }
 
-    int minPath()
+    int minPath()//获得该树的最小深度，时间复杂度是O(n)
     {
         return getMinPath(root);
     }
 
-    bool balance()
+    bool balance()//返回该树是否平衡，时间复杂度是O(n)
     {
         return maxPath()-minPath()<2?true:false;
     }
