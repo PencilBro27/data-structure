@@ -322,12 +322,15 @@ public:
             node *n;
             T *p;
         };
-        int index;
     public:
         iterator(LinkList<T> &ll,int index=0):L(ll)
         {
-            this->index=index;
             p=L.get(index);
+        }
+
+        iterator(LinkList<T>::iterator &o):L(o.L)
+        {
+            n=o.n;
         }
 
         bool begin()
@@ -337,14 +340,42 @@ public:
             return false;
         }
 
-        void prior()
-        {
-            n=n->prior;
-        }
-
-        void next()
+        LinkList<T>::iterator& operator++()
         {
             n=n->next;
+            return *this;
+        }
+
+        LinkList<T>::iterator operator++(int)
+        {
+            LinkList<T>::iterator old(*this);
+            n=n->next;
+            return old;
+        }
+
+        LinkList<T>::iterator& operator--()
+        {
+            n=n->prior;
+            return *this;
+        }
+
+        LinkList<T>::iterator operator--(int)
+        {
+            LinkList<T>::iterator old(*this);
+            n=n->prior;
+            return old;
+        }
+
+        LinkList<T>::iterator& prior()
+        {
+            n=n->prior;
+            return *this;
+        }
+
+        LinkList<T>::iterator& next()
+        {
+            n=n->next;
+            return *this;
         }
 
         bool end()
@@ -352,7 +383,7 @@ public:
             return L.front==n;
         }
 
-        T &operator*()
+        T& operator*()
         {
             return *p;
         }
