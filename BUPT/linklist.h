@@ -346,7 +346,7 @@ public:
             return *this;
         }
 
-        LinkList<T>::iterator operator++(int)
+        LinkList<T>::iterator& operator++(int)
         {
             LinkList<T>::iterator old(*this);
             n=n->next;
@@ -359,7 +359,7 @@ public:
             return *this;
         }
 
-        LinkList<T>::iterator operator--(int)
+        LinkList<T>::iterator& operator--(int)
         {
             LinkList<T>::iterator old(*this);
             n=n->prior;
