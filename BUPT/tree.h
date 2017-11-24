@@ -483,7 +483,7 @@ public:
         *root=*o.root;
         l.pushBack(&root);
         ot.pushBack(o.root);
-        i.pushBack(0);
+        i.pushBack(1);
         while(c)
         {
             if(0==i[0])
@@ -491,6 +491,8 @@ public:
                 i[0]+=1;
                 *l[0]=new node;
                 **l[0]=*ot[0];
+                if(c>1)
+                  (*l[0])->parent=*l[1];
             }
             else if(1==i[0])
             {
