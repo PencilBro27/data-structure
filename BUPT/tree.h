@@ -278,7 +278,7 @@ protected:
     {
         if(NULL==p)
           return 0;
-        int c=1,r=Size;
+        int c=1,r=0x7fffffff;
         LinkList<node*> l;
         LinkList<int> i;
         l.pushBack(root);
@@ -325,9 +325,9 @@ protected:
 
     inline void Delete(node *p)//供public中的pop函数调用，删除p所指向的节点，修复被破坏的红黑树性质，仅供内部调用，时间复杂度是O(log n)
     {
-        node *temp;
+        node *n,*s,*sl,*sr,*temp;//分别指向图中的对应节点（temp除外）
+        bool bp,bn,bs,bl,br;//这些表明图中节点的颜色
         bool d;
-        Size--;
         if(p->rc&&p->lc)
         {
             if(p->leftcount>p->rightcount)
@@ -352,26 +352,20 @@ protected:
             }
             p->key=temp->key;
             p->value=temp->value;
-            if(temp==temp->parent->lc)
-              temp->parent->lc=NULL;
-            else
-              temp->parent->rc=NULL;
             p=temp;
         }
-        temp=p->lc?p->lc:p->rc;
+        n=temp=p->lc?p->lc:p->rc;
         if(temp)
           temp->parent=p->parent;
         if(p->parent)
         {
             if(p==p->parent->lc)
             {
-                p->parent->lc=temp;
-                d=false;
+                n=p->parent->lc=temp;
             }
             else
             {
-                p->parent->rc=temp;
-                d=true;
+                n=p->parent->rc=temp;
             }
         }
         else
@@ -385,83 +379,111 @@ protected:
         bool flag=p->black;
         temp=p->parent;
         delete p;
-        p=NULL;
         if(false==flag)
           return ;
         p=temp;
-        if(NULL==p)
-          return ;
-        node *n,*s,*sl,*sr;
-        bool bp,bn=true,bs=true,bl=true,br=true;
-        if(d)
-        {
-            n=p->rc;
-            s=p->lc;
-        }
-        else
-        {
-            n=p->lc;
-            s=p->rc;
-        }
-        if(s)
-        {
-          sl=s->lc;
-          sr=s->rc;
-          bs=s->black;
-        }
-        if(n)
-        {
-          bn=n->black;
-        }
-        bp=p->black;
-        if(sl)
-          bl=sl->black;
-        if(sr)
-          br=sr->black;
-        if(n)
-          bn=n->black;
         while(true)
         {
-            if(!bn)
+            bp=bn=bs=bl=br=true;//这些表明图中节点的颜色
+            s=sr=sl=NULL;//分别指向图中的对应节点
+            if(NULL==p)
+            {
+                if(n)
+                  n->black=true;
+                return ;
+            }
+            bp=p->black;
+            d=(n==p->rc);
+            if(d)
+            {
+                n=p->rc;
+                s=p->lc;
+            }
+            else
+            {
+                n=p->lc;
+                s=p->rc;
+            }
+            if(s)
+            {
+              sl=s->lc;
+              sr=s->rc;
+              bs=s->black;
+            }
+            bp=p->black;
+            if(sl)
+              bl=sl->black;
+            if(sr)
+              br=sr->black;
+            if(n)
+              bn=n->black;
+            if(root==n)//情况1
+            {
+                if(n)
+                  n->black=true;
+                return;
+            }
+            else if(!bn)//情况2
             {
                 n->black=true;
                 return ;
             }
-            if((!bp)&&bs&&bl&&br)
+            else if(bn&&bs&&bl&&br&&bp)//情况3
+            {
+                if(s)
+                  s->black=false;
+                n=p;
+                p=p->parent;
+            }
+            else if((!bp)&&bs&&bl&&br)//情况4
             {
                 p->black=true;
-                s->black=false;
+                if(s)
+                  s->black=false;
                 return ;
             }
-            else if(bs&&(!br))
+            else if(bs&&(!br)&&(!d))//情况5
             {
                 sr->black=true;
                 swap(p->black,s->black);
                 leftRotate(p);
                 return ;
             }
-            else if(bs&&(!bl))
+            else if(bs&&(!bl)&&d)//情况5的对称情况
             {
-                s->black=false;
                 sl->black=true;
-                rightRotate(s);
+                swap(p->black,s->black);
+                rightRotate(p);
                 return ;
             }
-            else if(!bs)
+            else if(bs&&(!bl)&&br&&(!d))//情况6
             {
-                s->black=true;
-                p->black=false;
+                rightRotate(s);
+                swap(s->black,sl->black);
                 leftRotate(p);
+                swap(p->black,sl->black);
+                s->black=true;
                 return ;
             }
-            s->black=false;
-            if(!p->parent)
-              return ;
-            if(p==p->parent->rc)
-              d=true;
-            else
-              d=false;
-            p=p->parent;
+            else if(bs&&(!br)&&bl&&d)//情况6的对称情况
+            {
+                leftRotate(s);
+                swap(s->black,sr->black);
+                rightRotate(p);
+                swap(p->black,sr->black);
+                s->black=true;
+                return ;
+            }
+            else if((!bs)&&(!d))//情况7
+            {
+                leftRotate(p);
+                swap(s->black,p->black);
+            }
+            else if((!bs)&&d)//情况7的对称情况
+            {
+                rightRotate(p);
+                swap(s->black,p->black);
+            }
         }
     }
 public:
