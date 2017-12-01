@@ -328,7 +328,7 @@ public:
             p=L.get(index);
         }
 
-        iterator(LinkList<T>::iterator &o):L(o.L)
+        iterator(typename LinkList<T>::iterator &o):L(o.L)
         {
             n=o.n;
         }
@@ -340,39 +340,39 @@ public:
             return false;
         }
 
-        LinkList<T>::iterator& operator++()
+        typename LinkList<T>::iterator& operator++()
         {
             n=n->next;
             return *this;
         }
 
-        LinkList<T>::iterator& operator++(int)
+        typename LinkList<T>::iterator& operator++(int)
         {
-            LinkList<T>::iterator old(*this);
+            typename LinkList<T>::iterator old(*this);
             n=n->next;
             return old;
         }
 
-        LinkList<T>::iterator& operator--()
+        typename LinkList<T>::iterator& operator--()
         {
             n=n->prior;
             return *this;
         }
 
-        LinkList<T>::iterator& operator--(int)
+        typename LinkList<T>::iterator& operator--(int)
         {
-            LinkList<T>::iterator old(*this);
+            typename LinkList<T>::iterator old(*this);
             n=n->prior;
             return old;
         }
 
-        LinkList<T>::iterator& prior()
+        typename LinkList<T>::iterator& prior()
         {
             n=n->prior;
             return *this;
         }
 
-        LinkList<T>::iterator& next()
+        typename LinkList<T>::iterator& next()
         {
             n=n->next;
             return *this;
