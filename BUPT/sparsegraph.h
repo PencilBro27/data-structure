@@ -8,6 +8,7 @@
 #include <cassert>
 #include <cstring>
 #include "minheap.h"
+#include "unionfind.h"
 using namespace std;
 
 template <class Weight>
@@ -198,57 +199,20 @@ public:
     {
         cout << "Kruskal Algorithm:" << endl;
         MinHeap<edge> h(e);
-        vector<vector<int>> vertex;
+        UnionFind vert(v);
         int edgeCount=0;
         edge temp;
-        int index1,index2;
         for(int i=0;i<v;i++)
           for(int j=0;j<g[i].size();j++)
             if(g[i][j]->a < g[i][j]->b)
               h.insert(*(g[i][j]));
         while(!h.empty())
         {
-            index1=index2=-1;
             temp=h.popMin();
-            for(int i=0;i<vertex.size();i++)
-              for(int j=0;j<vertex[i].size();j++)
-              {
-                  if(temp.a==vertex[i][j])
-                    index1=i;
-                  if(temp.b==vertex[i][j])
-                    index2=i;
-              }
-            if(-2==index1+index2)
+            if(!vert.isConnected(temp.a,temp.b))
             {
+                vert.connect(temp.a,temp.b);
                 cout << "Edge: " << temp.a << " --- " << temp.b << endl;
-                vertex.push_back(vector<int>());
-                vertex[vertex.size()-1].push_back(temp.a);
-                vertex[vertex.size()-1].push_back(temp.b);
-                edgeCount++;
-            }
-            else if(index1==index2)
-            {
-                continue;
-            }
-            else if(-1==index1)
-            {
-                vertex[index2].push_back(temp.a);
-                cout << "Edge: " << temp.a << " --- " << temp.b << endl;
-                edgeCount++;
-            }
-            else if(-1==index2)
-            {
-                vertex[index1].push_back(temp.b);
-                cout << "Edge: " << temp.a << " --- " << temp.b << endl;
-                edgeCount++;
-            }
-            else
-            {
-                cout << "Edge: " << temp.a << " --- " << temp.b << endl;
-                edgeCount++;
-                for(int i=0;i<vertex[index2].size();i++)
-                  vertex[index1].push_back(vertex[index2][i]);
-                vertex.erase(vertex.begin()+index2);
             }
         }
         cout << v-edgeCount << "   Connected Component(s) in total" << endl << endl;
