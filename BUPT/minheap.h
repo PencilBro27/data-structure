@@ -15,9 +15,7 @@ protected:
     {
         while(k>1 && data[k/2]>data[k])
         {
-            T temp=data[k/2];
-            data[k/2]=data[k];
-            data[k]=temp;
+            swap(data[k/2],data[k]);
             k/=2;
         }
     }
@@ -29,9 +27,7 @@ protected:
             int j=2*k;
             if(j+1<=count && data[j+1]<data[j]) j++;
             if(data[k]<=data[j]) break;
-            T temp=data[j];
-            data[j]=data[k];
-            data[k]=temp;
+            swap(data[j],data[k]);
             k=j;
         }
     }
