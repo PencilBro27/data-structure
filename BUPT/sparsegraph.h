@@ -68,6 +68,7 @@ public:
 
     SparseGraph(int n,bool d=false)//构造函数，时间复杂度是O(V)
     {
+        assert(n>0);
         v=n;
         e=0;
         directed=d;
