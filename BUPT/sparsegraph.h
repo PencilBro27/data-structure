@@ -18,7 +18,7 @@ protected:
 
     struct edge{
         int a,b;
-        int weight;
+        Weight weight;
         edge(int a=0,int b=0,int w=0)
         {
             this->a=a;
