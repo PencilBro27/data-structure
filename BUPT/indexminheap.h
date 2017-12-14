@@ -1,3 +1,5 @@
+//这是一个最小索引堆
+
 #ifndef INDEXMINHEAP_H
 #define INDEXMINHEAP_H
 
@@ -14,7 +16,7 @@ protected:
     int count;
     int capa;
 
-    inline void shiftUp(int index)
+    inline void shiftUp(int index)//时间复杂度是O(log n)
     {
         while(index>1 && data[indexes[index/2]]>data[indexes[index]])
         {
@@ -25,7 +27,7 @@ protected:
         }
     }
 
-    inline void shiftDown(int index)
+    inline void shiftDown(int index)//时间复杂度是O(log n)
     {
         int j;
         while(2*index<=count)
@@ -43,7 +45,7 @@ protected:
     }
 
 public:
-    IndexMinHeap(int capacity)
+    IndexMinHeap(int capacity)//构造函数，时间复杂度是O(1)
     {
         data=new T[capacity+1]();
         indexes=new int[capacity+2]();
@@ -52,18 +54,18 @@ public:
         capa=capacity;
     }
 
-    ~IndexMinHeap()
+    ~IndexMinHeap()//析构函数，时间复杂度是O(1)
     {
         delete []data;
         delete []indexes;
         delete []reverse;
     }
 
-    int size(){return count;}
-    int capacity(){return capa;}
-    bool empty(){return 0==count;}
+    int size(){return count;}//返回元素个数，时间复杂度是O(1)
+    int capacity(){return capa;}//返回总容量，时间复杂度是O(1)
+    bool empty(){return 0==count;}//返回是否为空，时间复杂度是O(1)
 
-    void insert(int index,T t)
+    void insert(int index,T t)//插入元素，时间复杂度是O(log n)
     {
         assert(count+1<=capa && index+1>=1 && index+1<=capa && !contain(index));
         index++;
@@ -74,7 +76,7 @@ public:
         shiftUp(count);
     }
 
-    T popMin()
+    T popMin()//返回并删除最小元素，时间复杂度是O(log n)
     {
         assert(count>0);
         T r=data[indexes[1]];
@@ -86,7 +88,7 @@ public:
         return r;
     }
 
-    int popMinIndex()
+    int popMinIndex()//删除最小元素并返回索引，时间复杂度是O(log n)
     {
         assert(count>0);
         int r=indexes[1]-1;
@@ -98,30 +100,30 @@ public:
         return r;
     }
 
-    T getMin()
+    T getMin()//返回最小元素，时间复杂度是O(1)
     {
         assert(count>0);
         return data[indexes[1]];
     }
 
-    int getMinIndex()
+    int getMinIndex()//返回最小元素的索引，时间复杂度是O(1)
     {
         assert(count>0);
         return indexes[1]-1;
     }
 
-    bool contain(int index)
+    bool contain(int index)//检测索引是否存在，时间复杂度是O(1)
     {
         return reverse[index+1]!=0;
     }
 
-    T getData(int index)
+    T getData(int index)//返回索引对应的值，时间复杂度是O(1)
     {
         assert(contain(index));
         return data[index+1];
     }
 
-    void change(int index,T newData)
+    void change(int index,T newData)//改变索引对应元素的值，时间复杂度是O(log n)
     {
         assert(contain(index));
         index++;
