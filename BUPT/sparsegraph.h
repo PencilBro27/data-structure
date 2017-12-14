@@ -9,6 +9,7 @@
 #include <cstring>
 #include "minheap.h"
 #include "unionfind.h"
+#include "indexminheap.h"
 using namespace std;
 
 template <class Weight>
@@ -17,21 +18,12 @@ protected:
 
     struct edge{
         int a,b;
-        Weight weight;
-        edge(int a,int b,Weight w)
+        int weight;
+        edge(int a=0,int b=0,int w=0)
         {
             this->a=a;
             this->b=b;
             weight=w;
-        }
-
-        edge(){}
-
-        edge(edge &o)
-        {
-            a=o.a;
-            b=o.b;
-            weight=o.weight;
         }
 
         ~edge(){}
@@ -213,6 +205,7 @@ public:
             {
                 vert.connect(temp.a,temp.b);
                 cout << "Edge: " << temp.a << " --- " << temp.b << endl;
+                edgeCount++;
             }
         }
         cout << v-edgeCount << "   Connected Component(s) in total" << endl << endl;
@@ -222,41 +215,30 @@ public:
     {
         assert(s>=0 && s<v);
         cout << endl << "Dijkstra Algorithm:  start from the Vertex: " << s << endl << endl;
-        int temp=s,temp2;
         Weight *disk=new Weight[v]();
-        int *from=new int[v];
+        int temp,temp2,*from=new int[v];
         bool *mark=new bool[v]();
         memset(from,-1,v*sizeof(int));
-        mark[s]=true;
-        while(true)
+        IndexMinHeap<Weight> imh(v);
+        imh.insert(s,disk[s]);
+        while(!imh.empty())
         {
+            temp=imh.popMinIndex();
+            mark[temp]=true;
             for(int i=0;i<g[temp].size();i++)
             {
                 temp2=g[temp][i]->b;
-                if(-1==from[temp2] && temp != temp2 && false==mark[temp2])
-                {
-                    from[temp2]=temp;
-                    disk[temp2]=disk[temp]+g[temp][i]->weight;
-                }
-                else if(disk[temp]+g[temp][i]->weight < disk[temp2] && temp != temp2)
-                {
-                    from[temp2]=temp;
-                    disk[temp2]=disk[temp]+g[temp][i]->weight;
-                }
+                if(!mark[temp2])
+                  if(-1==from[temp2] || disk[temp]+g[temp][i]->weight<disk[temp2])
+                  {
+                      disk[temp2]=disk[temp]+g[temp][i]->weight;
+                      from[temp2]=temp;
+                      if(imh.contain(temp2))
+                        imh.change(temp2,disk[temp2]);
+                      else
+                        imh.insert(temp2,disk[temp2]);
+                  }
             }
-            temp=-1;
-            for(int i=0;i<v;i++)
-              if(-1 != from[i] && false==mark[i])
-              {
-                  temp=i;
-                  break;
-              }
-            for(int i=0;i<v;i++)
-              if(-1 != from[i] && disk[i] < disk[temp] && false==mark[i])
-                temp=i;
-            if(-1==temp)
-              break;
-            mark[temp]=true;
         }
         for(int i=0;i<v;i++)
         {
