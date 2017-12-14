@@ -1,3 +1,5 @@
+//这是一个最小堆
+
 #ifndef MINHEAP_H
 #define MINHEAP_H
 
@@ -9,9 +11,9 @@ template<class T>
 class MinHeap{
 protected:
     T *data;
-    int count,capacity;
+    int count,capacity;//分别是现有元素个数和容量
 
-    void shiftUp(int k)
+    inline void shiftUp(int k)//时间复杂度是O(log n)
     {
         while(k>1 && data[k/2]>data[k])
         {
@@ -20,7 +22,7 @@ protected:
         }
     }
 
-    void shiftDown(int k)
+    inline void shiftDown(int k)//时间复杂度是O(log n)
     {
         while(2*k <= count)
         {
@@ -33,22 +35,22 @@ protected:
     }
 
 public:
-    MinHeap(int capacity)
+    MinHeap(int capacity)//构造函数，时间复杂度是O(1)
     {
-        data=new T[capacity+1];
+        data=new T[capacity+2];
         count=0;
         this->capacity=capacity;
     }
 
-    ~MinHeap()
+    ~MinHeap()//析构函数，时间复杂度是O(1)
     {
         delete[] data;
     }
 
-    int size(){return count;}
-    bool empty(){return 0==count;}
+    int size(){return count;}//返回现有元素个数，时间复杂度是O(1)
+    bool empty(){return 0==count;}//返回是否为空，时间复杂度是O(1)
 
-    void insert(T a)
+    void insert(T a)//插入函数，时间复杂度是O(log n)
     {
         assert(count+1<=capacity);
         data[count+1]=a;
@@ -56,7 +58,7 @@ public:
         count++;
     }
 
-    T popMin()
+    T popMin()//返回并删除最小元素，时间复杂度是O(log n)
     {
         assert(count>0);
         T r=data[1];
@@ -66,7 +68,7 @@ public:
         return r;
     }
 
-    T getMin()
+    T getMin()//返回最小元素，时间复杂度是O(1)
     {
         assert(count>0);
         return data[1];
