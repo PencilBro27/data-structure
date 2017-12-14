@@ -1,3 +1,5 @@
+//这是一个稀疏图，用邻接表，允许有平行边和自环边，可以自定义是不是有向图（默认是无向图）
+
 #ifndef SPARSEGRAPH_H
 #define SPARSEGRAPH_H
 
@@ -12,11 +14,12 @@
 #include "indexminheap.h"
 using namespace std;
 
-template <class Weight>
+template <class Weight>//Weight是权重的数据类型，节点类型是int
 class SparseGraph{
 protected:
 
-    struct edge{
+    //这是边
+	struct edge{
         int a,b;
         Weight weight;
         edge(int a=0,int b=0,int w=0)
@@ -57,13 +60,13 @@ protected:
         }
     };
 
-    int v,e;
-    bool directed;
-    vector<vector<edge *>> g;
+    int v,e;//分别是节点个数个边的个数
+    bool directed;//是不是有向图
+    vector<vector<edge *>> g;//存储边
 
 public:
 
-    SparseGraph(int n,bool d=false)
+    SparseGraph(int n,bool d=false)//构造函数，时间复杂度是O(V)
     {
         v=n;
         e=0;
@@ -72,17 +75,17 @@ public:
           g.push_back(vector<edge *>());
     }
 
-    ~SparseGraph()
+    ~SparseGraph()//析构函数，时间复杂度是O(E)
     {
         for(int i=0;i<v;i++)
           for(int j=0;j<g[i].size();j++)
             delete g[i][j];
     }
 
-    int V(){return v;}
-    int E(){return e;}
+    int V(){return v;}//返回节点个数，时间复杂度是O(1)
+    int E(){return e;}//返回边的个数，时间复杂度是O(1)
 
-    bool hasEdge(int a,int b)
+    bool hasEdge(int a,int b)//返回是否有边，最差时间复杂度是O(E)
     {
         assert(a>=0 && a<v && b>=0 && b<v);
         for(int i=0;i<g[a].size();i++)
@@ -91,7 +94,7 @@ public:
         return false;
     }
 
-    void addEdge(int a,int b,Weight w)
+    void addEdge(int a,int b,Weight w)//添加边，时间复杂度是O(1)
     {
         assert(a>=0 && a<v && b>=0 && b<v);
         g[a].push_back(new edge(a,b,w));
@@ -100,7 +103,7 @@ public:
         e++;
     }
 
-    void bfs(int start=0)
+    void bfs(int start=0)//BFS，时间复杂度是O(E)
     {
         assert(start>=0 && start<v);
         cout << "BFS:  ";
@@ -125,7 +128,7 @@ public:
         delete []visited;
     }
 
-    void dfs(int start=0)
+    void dfs(int start=0)//DFS，时间复杂度是O(E)
     {
         assert(start>=0 && start<v);
         cout << "DFS:  ";
@@ -162,7 +165,7 @@ public:
         delete []visited;
     }
 
-    void prim(int start=0)
+    void prim(int start=0)//普里姆算法，时间复杂度是O(E * log E)
     {
         assert(start>=0 && start<v);
         cout << "Prim Algorithm:  start from the Vertex:  " << start << endl;
@@ -187,7 +190,7 @@ public:
         delete []visited;
     }
 
-    void kruskal()
+    void kruskal()//克鲁斯卡尔算法，时间复杂度是O(E * log E)
     {
         cout << "Kruskal Algorithm:" << endl;
         MinHeap<edge> h(e);
@@ -211,7 +214,7 @@ public:
         cout << v-edgeCount << "   Connected Component(s) in total" << endl << endl;
     }
 
-    void dijkstra(int s=0)
+    void dijkstra(int s=0)//Dijkstra算法，时间复杂度是O(E * log V)
     {
         assert(s>=0 && s<v);
         cout << endl << "Dijkstra Algorithm:  start from the Vertex: " << s << endl << endl;
